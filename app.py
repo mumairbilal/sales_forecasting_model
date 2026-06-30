@@ -920,7 +920,6 @@ st.markdown("""
 mom_pill_cls = "green"
 mom_pill_txt = "● All Time"#f"↑ +{mom_growth:.1f}% MoM" if mom_growth >= 0 else f"↓ {mom_growth:.1f}% MoM"
 
-# 1. Yeh kpi_data replace karein (isme shuru mein emojis hain)
 kpi_data = [
     (fmt_currency(total_revenue, CURR_SYM), "Total Revenue",     "#059669", "rgba(0,214,143,0.12)", "rgba(0,214,143,0.2)",  mom_pill_cls, mom_pill_txt),
     (fmt_currency(total_profit,  CURR_SYM), "Net Profit",        "#3D8EFF", "rgba(61,142,255,0.12)","rgba(61,142,255,0.2)",  "green" if avg_margin>0 else "red", "↑ Positive" if avg_margin>0 else "↓ Watch"),
@@ -931,14 +930,14 @@ kpi_data = [
 
 cols = st.columns(5, gap="small")
 
-# 2. Yeh loop as it is chalne dein (isme 8 variables barabar hain)
-for i, (col, (ico, val, lbl, color, glow, border, pill_cls, pill_txt)) in enumerate(zip(cols, kpi_data)):
+# Yahan se 'ico' hata diya gaya hai taake error na aaye (sirf 7 variables hain)
+for i, (col, (val, lbl, color, glow, border, pill_cls, pill_txt)) in enumerate(zip(cols, kpi_data)):
     with col:
+        # Yahan se bhi <div class="kpi-icon">{ico}</div> hata diya gaya hai
         st.markdown(f"""
         <div class="kpi-card" style="--kc-color:{color}; --kc-glow:{glow}; --kc-border:{border}; animation-delay:{i*0.08}s;">
           <div class="kpi-card-top-bar"></div>
           <div class="kpi-card-bg"></div>
-          <div class="kpi-icon">{ico}</div>
           <div class="kpi-val">{val}</div>
           <div class="kpi-lbl">{lbl}</div>
           <div class="kpi-pill {pill_cls}">{pill_txt}</div>
