@@ -1005,7 +1005,8 @@ hist_agg = (
 )
 
 # Last month vs second-last month actual revenue (trend direction from real data)
-months_ordered = sorted(df["_month"].unique())
+#months_ordered = sorted(df["_month"].unique())
+months_ordered = sorted(df["_month"].dropna().astype(str).unique())
 last_two = months_ordered[-2:] if len(months_ordered) >= 2 else months_ordered
 
 trend_df = None
