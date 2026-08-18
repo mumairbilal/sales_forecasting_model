@@ -726,15 +726,15 @@ st.markdown(f"""
     border-color: #1E293B !important;
 }}
 
-/* making white text color of the button - only the FIRST visible text node, hide any duplicate/sr-only label */
-.stApp [data-testid="stFileUploaderDropzone"] button {{
+/* making white text color of the button (all inner nodes, since browse-files label can be wrapped in nested spans) */
+.stApp [data-testid="stFileUploaderDropzone"] button,
+.stApp [data-testid="stFileUploaderDropzone"] button * {{
     color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 0.9rem !important;
     font-weight: 700 !important;
-}}
-.stApp [data-testid="stFileUploaderDropzone"] button > *:not(:first-child) {{
-    display: none !important;
+    opacity: 1 !important;
 }}
 
 /* ═════════════════════════════════════════════════
@@ -936,11 +936,11 @@ mom_pill_cls = "green"
 mom_pill_txt = "● All Time"#f"↑ +{mom_growth:.1f}% MoM" if mom_growth >= 0 else f"↓ {mom_growth:.1f}% MoM"
 
 kpi_data = [
-    (fmt_currency(total_revenue, CURR_SYM), "Total Revenue",     "#059669", "rgba(0,214,143,0.12)", "rgba(0,214,143,0.2)",  mom_pill_cls, mom_pill_txt),
-    (fmt_currency(total_profit,  CURR_SYM), "Net Profit",        "#3D8EFF", "rgba(61,142,255,0.12)","rgba(61,142,255,0.2)",  "green" if avg_margin>0 else "red", "↑ Positive" if avg_margin>0 else "↓ Watch"),
-    (fmt_number(total_orders),              "Total Orders",      "#9B7FFF", "rgba(155,127,255,0.12)","rgba(155,127,255,0.2)", "dim",  "● Counted"),
-    (fmt_number(total_qty),                 "Units Sold",        "#FFB547", "rgba(255,181,71,0.10)", "rgba(255,181,71,0.2)",  "dim",  "● Tracked"),
-    (f"{avg_margin:.1f}%",                  "Avg Profit Margin", "#FF6B9E", "rgba(255,107,158,0.10)","rgba(255,107,158,0.2)", "green" if avg_margin>0 else "red", "↑ Healthy" if avg_margin>0 else "↓ Risk"),
+    ("💰", fmt_currency(total_revenue, CURR_SYM), "Total Revenue",     "#059669", "rgba(0,214,143,0.12)", "rgba(0,214,143,0.2)",  mom_pill_cls, mom_pill_txt),
+    ("📈", fmt_currency(total_profit,  CURR_SYM), "Net Profit",        "#3D8EFF", "rgba(61,142,255,0.12)","rgba(61,142,255,0.2)",  "green" if avg_margin>0 else "red", "↑ Positive" if avg_margin>0 else "↓ Watch"),
+    ("🧾", fmt_number(total_orders),              "Total Orders",      "#9B7FFF", "rgba(155,127,255,0.12)","rgba(155,127,255,0.2)", "dim",  "● Counted"),
+    ("📦", fmt_number(total_qty),                 "Units Sold",        "#FFB547", "rgba(255,181,71,0.10)", "rgba(255,181,71,0.2)",  "dim",  "● Tracked"),
+    ("🎯", f"{avg_margin:.1f}%",                  "Avg Profit Margin", "#FF6B9E", "rgba(255,107,158,0.10)","rgba(255,107,158,0.2)", "green" if avg_margin>0 else "red", "↑ Healthy" if avg_margin>0 else "↓ Risk"),
 ]
 
 cols = st.columns(5, gap="small")
@@ -1711,7 +1711,7 @@ with tabs[5]:
 # ── Tab 7: AI Store Advisor
 with tabs[6]:
 
-    GEMINI_API_KEY = "AQ.Ab8RN6IzTU2ySjm0QI3AGfNNinUeNCPgv2Rt0RHGTmg4JzgeFg"
+    GEMINI_API_KEY = "AIzaSyBZEGli1sk_rMTXCMRERqxd4bYDYmcjcz0"
     #GEMINI_MODEL   = "gemini-flash-latest"
     GEMINI_MODEL   = "gemini-3.1-flash-lite-preview"
 
