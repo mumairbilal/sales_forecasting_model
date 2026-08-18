@@ -732,9 +732,34 @@ st.markdown(f"""
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
-    font-size: 0.9rem !important;
     font-weight: 700 !important;
     opacity: 1 !important;
+}}
+
+/* NUCLEAR FIX for duplicate "UploadUpload" text: shrink every real text
+   node inside the button to zero size, then inject ONE clean label via
+   a pseudo-element. Guarantees a single, non-duplicated label no matter
+   how many hidden/sr-only text nodes Streamlit renders internally. */
+.stApp [data-testid="stFileUploaderDropzone"] button {{
+    position: relative !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+}}
+.stApp [data-testid="stFileUploaderDropzone"] button * {{
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+}}
+.stApp [data-testid="stFileUploaderDropzone"] button::after {{
+    content: "Upload File" !important;
+    display: block !important;
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
 }}
 
 /* ═════════════════════════════════════════════════
