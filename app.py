@@ -762,6 +762,16 @@ st.markdown(f"""
     font-family: 'Plus Jakarta Sans', sans-serif !important;
 }}
 
+/* Once a file has already been selected/staged, the original drag-drop
+   CTA button becomes a leftover duplicate ("Upload File" showing twice).
+   Hide the whole dropzone CTA in that state — only the file row + its
+   own action button should remain visible. */
+.stApp [data-testid="stFileUploader"]:has(li) [data-testid="stFileUploaderDropzone"],
+.stApp [data-testid="stFileUploader"]:has([data-testid="stUploadedFile"]) [data-testid="stFileUploaderDropzone"],
+.stApp [data-testid="stFileUploader"]:has([data-testid="stUploadedFileData"]) [data-testid="stFileUploaderDropzone"] {{
+    display: none !important;
+}}
+
 /* ═════════════════════════════════════════════════
    UNIVERSAL CATCH-ALL: any button/text anywhere inside the
    file uploader (dropzone, file row, "add" confirm button —
@@ -1068,7 +1078,7 @@ hist_agg = (
 )
 
 # Last month vs second-last month actual revenue (trend direction from real data)
-months_ordered = sorted(df["_month"].unique())
+months_ordered = sorted(df["_month"].dropna().astype(str).unique().tolist())
 last_two = months_ordered[-2:] if len(months_ordered) >= 2 else months_ordered
 
 trend_df = None
