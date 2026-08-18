@@ -185,7 +185,7 @@ def get_theme_css(theme):
         section[data-testid="stSidebar"] { background: var(--card-bg) !important; border-right: 1px solid var(--line) !important; }
         section[data-testid="stSidebar"] * { color: var(--snow) !important; }
         .stTabs [data-baseweb="tab-list"] { background: var(--card-bg) !important; border-color: var(--line) !important; }
-        .stTabs [data-baseweb="tab"] { color: var(--snow-mute) !important; }
+        .stTabs [role="tab"] { color: var(--snow-mute) !important; }
         .stTabs [aria-selected="true"] { background: var(--ink-3) !important; color: var(--snow) !important; }
         
         /* Light Selects & Dataframes */
@@ -234,14 +234,17 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div {{
 ::-webkit-scrollbar-thumb:hover {{ background: var(--scrollbar-hover); }}
 
 /* ── Tabs ────────────────────────────────────────────── */
-html body .stApp .stTabs [data-baseweb="tab-list"] {{
+/* Confirmed via DevTools: this Streamlit build uses React Aria tabs
+   (data-rac / role="tablist" / role="tab"), NOT BaseWeb — so we target
+   the real ARIA roles instead of the old [data-baseweb] attribute. */
+html body .stApp .stTabs [role="tablist"] {{
     background: var(--tab-bg);
     border: 1px solid var(--line);
     border-radius: 14px;
     padding: 5px; gap: 4px;
 }}
-html body .stApp .stTabs [data-baseweb="tab"],
-html body .stApp .stTabs [data-baseweb="tab"] * {{
+html body .stApp .stTabs [role="tab"],
+html body .stApp .stTabs [role="tab"] * {{
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 0.84rem !important; font-weight: 500 !important;
     color: #0A0F18 !important;
@@ -249,17 +252,17 @@ html body .stApp .stTabs [data-baseweb="tab"] * {{
     background: transparent !important;
     letter-spacing: 0.01em !important;
 }}
-html body .stApp .stTabs [data-baseweb="tab"] {{
+html body .stApp .stTabs [role="tab"] {{
     padding: 9px 22px !important; border-radius: 10px !important;
     transition: all 0.25s !important; border: none !important;
 }}
-html body .stApp .stTabs [data-baseweb="tab"]:hover,
-html body .stApp .stTabs [data-baseweb="tab"]:hover * {{
+html body .stApp .stTabs [role="tab"]:hover,
+html body .stApp .stTabs [role="tab"]:hover * {{
     color: #0A0F18 !important; -webkit-text-fill-color: #0A0F18 !important;
     background: var(--tab-hover) !important;
 }}
-html body .stApp .stTabs [aria-selected="true"],
-html body .stApp .stTabs [aria-selected="true"] * {{
+html body .stApp .stTabs [role="tab"][aria-selected="true"],
+html body .stApp .stTabs [role="tab"][aria-selected="true"] * {{
     background: var(--tab-active) !important;
     color: #0A0F18 !important; -webkit-text-fill-color: #0A0F18 !important;
     font-weight: 600 !important;
@@ -724,14 +727,16 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── SINGLE CLEAN UPLOADER (plain default Streamlit widget) ──
-# Minimal fix (4 rules only): Streamlit's own default "uploaded file" chip
-# renders as a dark badge with low-contrast icon/text — this just makes
-# that one native element readable, no other styling touched.
+# Confirmed via DevTools: the widget testid is "stFileUploaderDropzone"
+# (a <section>) — this covers whatever internal file-preview badge/icon
+# it renders inside, so it's never a dark chip regardless of internal markup.
 st.markdown("""
 <style>
-[data-testid="stFileUploaderFile"] { background-color: #FFFFFF !important; }
-[data-testid="stFileUploaderFile"] * { color: #0A0F18 !important; }
-[data-testid="stFileUploaderFileIcon"] svg { fill: #0A0F18 !important; }
+[data-testid="stFileUploaderDropzone"] { background-color: #FFFFFF !important; }
+[data-testid="stFileUploaderDropzone"] * { color: #0A0F18 !important; -webkit-text-fill-color: #0A0F18 !important; }
+[data-testid="stFileUploaderDropzone"] svg { fill: #0A0F18 !important; }
+[data-testid="stFileUploaderDropzone"] button { background-color: #0F172A !important; }
+[data-testid="stFileUploaderDropzone"] button * { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
 </style>
 """, unsafe_allow_html=True)
 uploaded_file = st.file_uploader("Upload your sales data", type=["csv","xlsx","xls"])
@@ -1863,17 +1868,17 @@ CRITICAL RULES:
     }}
 
     /* ── Send button ── */
-    .adv-input-marker + div[data-testid="stHorizontalBlock"] {{
+    div[data-testid="stElementContainer"]:has(> .adv-input-marker) + div[data-testid="stLayoutWrapper"] div[data-testid="stHorizontalBlock"] {{
         display: flex !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
         gap: 0.5rem !important;
     }}
-    .adv-input-marker + div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {{
+    div[data-testid="stElementContainer"]:has(> .adv-input-marker) + div[data-testid="stLayoutWrapper"] div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {{
         min-width: 0 !important;
         flex-shrink: 0 !important;
     }}
-    .adv-input-marker + div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:first-child {{
+    div[data-testid="stElementContainer"]:has(> .adv-input-marker) + div[data-testid="stLayoutWrapper"] div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:first-child {{
         flex: 1 1 auto !important;
     }}
     .send-btn > div > button {{
@@ -1905,7 +1910,7 @@ CRITICAL RULES:
     }}
 
     /* ── Text input ── */
-    .adv-input-marker + div[data-testid="stHorizontalBlock"] div[data-testid="stTextInput"] input {{
+    div[data-testid="stElementContainer"]:has(> .adv-input-marker) + div[data-testid="stLayoutWrapper"] div[data-testid="stHorizontalBlock"] div[data-testid="stTextInput"] input {{
         background: {'rgba(255,255,255,0.06)' if IS_DARK_CHAT else '#FFFFFF'} !important;
         border: 1.5px solid var(--line-2) !important;
         border-radius: 12px !important;
@@ -1915,11 +1920,11 @@ CRITICAL RULES:
         padding: 0.62rem 1rem !important;
         transition: border-color 0.2s !important;
     }}
-    .adv-input-marker + div[data-testid="stHorizontalBlock"] div[data-testid="stTextInput"] input:focus {{
+    div[data-testid="stElementContainer"]:has(> .adv-input-marker) + div[data-testid="stLayoutWrapper"] div[data-testid="stHorizontalBlock"] div[data-testid="stTextInput"] input:focus {{
         border-color: rgba(155,127,255,0.55) !important;
         box-shadow: 0 0 0 3px rgba(155,127,255,0.1) !important;
     }}
-    .adv-input-marker + div[data-testid="stHorizontalBlock"] div[data-testid="stTextInput"] input::placeholder {{
+    div[data-testid="stElementContainer"]:has(> .adv-input-marker) + div[data-testid="stLayoutWrapper"] div[data-testid="stHorizontalBlock"] div[data-testid="stTextInput"] input::placeholder {{
         color: var(--snow-mute) !important;
     }}
 
