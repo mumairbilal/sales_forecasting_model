@@ -738,6 +738,31 @@ st.markdown(f"""
 }}
 
 /* ═════════════════════════════════════════════════
+   UNIVERSAL CATCH-ALL: any button/text anywhere inside the
+   file uploader (dropzone, file row, "add" confirm button —
+   whatever internal testid this Streamlit version uses)
+   must always be white text on dark background.
+   ═════════════════════════════════════════════════ */
+.stApp [data-testid="stFileUploader"] * {{
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}}
+.stApp [data-testid="stFileUploader"] button {{
+    background-color: #0F172A !important;
+    border: 1px solid #0F172A !important;
+    border-radius: 8px !important;
+}}
+.stApp [data-testid="stFileUploader"] button:hover {{
+    background-color: #1E293B !important;
+    border-color: #1E293B !important;
+}}
+.stApp [data-testid="stFileUploader"] li,
+.stApp [data-testid="stFileUploader"] [class*="File"] {{
+    background-color: #0F172A !important;
+    border-radius: 10px !important;
+}}
+
+/* ═════════════════════════════════════════════════
    UPLOADED FILE TEXT VISIBILITY
    ═════════════════════════════════════════════════ */
 .stApp div[data-testid="stUploadedFile"],
@@ -1711,7 +1736,10 @@ with tabs[5]:
 # ── Tab 7: AI Store Advisor
 with tabs[6]:
 
-    GEMINI_API_KEY = "AIzaSyBZEGli1sk_rMTXCMRERqxd4bYDYmcjcz0"
+    try:
+        GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        GEMINI_API_KEY = "AIzaSyBZEGli1sk_rMTXCMRERqxd4bYDYmcjcz0"
     #GEMINI_MODEL   = "gemini-flash-latest"
     GEMINI_MODEL   = "gemini-3.1-flash-lite-preview"
 
