@@ -764,11 +764,13 @@ st.markdown(f"""
 
 /* Once a file has already been selected/staged, the original drag-drop
    CTA button becomes a leftover duplicate ("Upload File" showing twice).
-   Hide the whole dropzone CTA in that state — only the file row + its
-   own action button should remain visible. */
-.stApp [data-testid="stFileUploader"]:has(li) [data-testid="stFileUploaderDropzone"],
-.stApp [data-testid="stFileUploader"]:has([data-testid="stUploadedFile"]) [data-testid="stFileUploaderDropzone"],
-.stApp [data-testid="stFileUploader"]:has([data-testid="stUploadedFileData"]) [data-testid="stFileUploaderDropzone"] {{
+   Hide the dropzone whenever it sits next to ANY other sibling element
+   inside the uploader (i.e. a file row has been added) — works no matter
+   which order they render in, and doesn't depend on exact tag/class names. */
+.stApp [data-testid="stFileUploaderDropzone"]:has(~ *) {{
+    display: none !important;
+}}
+.stApp * + [data-testid="stFileUploaderDropzone"] {{
     display: none !important;
 }}
 
