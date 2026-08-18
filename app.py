@@ -161,8 +161,9 @@ def get_theme_css(theme):
         /* Spinner Fix */
         .stSpinner > div > div {
             border-color: rgba(0, 0, 0, 0.1) !important;
-            border-top-color: #059669 !important;
+            border-top-color: #0A0F18 !important;
         }
+        [data-testid="stSpinner"] svg { fill: #0A0F18 !important; color: #0A0F18 !important; }
         [data-testid="stSpinner"] > div > div > div > p,
         [data-testid="stSpinner"] * { color: var(--snow) !important; }
         
@@ -239,16 +240,16 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div {{
     border-radius: 14px;
     padding: 5px; gap: 4px;
 }}
-.stTabs [data-baseweb="tab"] {{
+.stTabs [data-baseweb="tab"], .stTabs [data-baseweb="tab"] p, .stTabs [data-baseweb="tab"] div {{
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 0.84rem !important; font-weight: 500 !important;
-    padding: 9px 22px !important; color: var(--snow-dim) !important;
+    padding: 9px 22px !important; color: #0A0F18 !important;
     background: transparent !important; border-radius: 10px !important;
     transition: all 0.25s !important; border: none !important;
     letter-spacing: 0.01em !important;
 }}
-.stTabs [data-baseweb="tab"]:hover {{ color: var(--snow) !important; background: var(--tab-hover) !important; }}
-.stTabs [aria-selected="true"] {{ background: var(--tab-active) !important; color: var(--snow) !important; font-weight: 600 !important; }}
+.stTabs [data-baseweb="tab"]:hover, .stTabs [data-baseweb="tab"]:hover p {{ color: #0A0F18 !important; background: var(--tab-hover) !important; }}
+.stTabs [aria-selected="true"], .stTabs [aria-selected="true"] p {{ background: var(--tab-active) !important; color: #0A0F18 !important; font-weight: 600 !important; }}
 .stTabs [data-baseweb="tab-panel"] {{ padding-top: 1.8rem; }}
 
 /* ── Alerts ── */
@@ -257,7 +258,10 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div {{
 .stError > div {{ background: rgba(255,67,97,0.06) !important; border: 1px solid rgba(255,67,97,0.25) !important; border-radius: 14px !important; }}
 .stInfo > div {{ background: rgba(61,142,255,0.06) !important; border: 1px solid rgba(61,142,255,0.2) !important; border-radius: 14px !important; color: var(--snow) !important; }}
 .stDataFrame {{ border-radius: 14px !important; border: 1px solid var(--df-border) !important; overflow: hidden; }}
-.stSpinner > div {{ border-top-color: #059669 !important; }}
+.stSpinner > div {{ border-top-color: #0A0F18 !important; }}
+[data-testid="stSpinner"] div {{ border-color: rgba(10,15,24,0.15) !important; border-top-color: #0A0F18 !important; }}
+[data-testid="stSpinner"] svg {{ fill: #0A0F18 !important; color: #0A0F18 !important; }}
+[data-testid="stSpinner"] p {{ color: var(--snow) !important; }}
 
 [data-testid="stFileUploaderDropzone"] {{
     background: var(--upload-bg) !important;
@@ -696,16 +700,16 @@ st.markdown(f"""
     display: none !important;
 }}
 
-/* Sub elements ka color bhi transparent kar dein taake Limit 200mb nazar na aaye */
-.stApp [data-testid="stFileUploaderDropzone"] * {{
-    color: #000000 !important; 
+/* Drag & drop instructional text (filename, "Limit 200MB" etc) - hide fully so it doesn't clash with the button */
+.stApp [data-testid="stFileUploaderDropzone"] > div > span,
+.stApp [data-testid="stFileUploaderDropzone"] > div > small,
+.stApp [data-testid="stFileUploaderDropzone"] > div > div > span,
+.stApp [data-testid="stFileUploaderDropzone"] > div > div > small {{
+    display: none !important;
 }}
 
 /* SIRF BUTTON KO COLOR WAPIS DEIN */
 .stApp [data-testid="stFileUploaderDropzone"] button {{
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
     width: 100% !important;
     background-color: #0F172A !important; 
     border: 1px solid #0F172A !important;
@@ -715,29 +719,34 @@ st.markdown(f"""
     margin: 0 !important;
     cursor: pointer !important;
     transition: all 0.2s !important;
+    overflow: hidden !important;
 }}
 .stApp [data-testid="stFileUploaderDropzone"] button:hover {{
     background-color: #1E293B !important;
     border-color: #1E293B !important;
 }}
 
-/* making white text color of the button */
-.stApp [data-testid="stFileUploaderDropzone"] button,
-.stApp [data-testid="stFileUploaderDropzone"] button * {{
+/* making white text color of the button - only the FIRST visible text node, hide any duplicate/sr-only label */
+.stApp [data-testid="stFileUploaderDropzone"] button {{
     color: #FFFFFF !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 0.9rem !important;
     font-weight: 700 !important;
 }}
+.stApp [data-testid="stFileUploaderDropzone"] button > *:not(:first-child) {{
+    display: none !important;
+}}
 
 /* ═════════════════════════════════════════════════
    UPLOADED FILE TEXT VISIBILITY
    ═════════════════════════════════════════════════ */
-.stApp div[data-testid="stUploadedFile"] {{
+.stApp div[data-testid="stUploadedFile"],
+.stApp div[data-testid="stUploadedFileData"],
+.stApp li[data-testid="stFileUploaderFile"] {{
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    background-color: var(--card-bg) !important; 
+    background-color: #FFFFFF !important; 
     border: 1px solid var(--line-2) !important;
     border-radius: 10px !important;
     padding: 10px 14px !important;
@@ -745,33 +754,38 @@ st.markdown(f"""
     box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
 }}
 
-/* Universal Target: Har text light mode mein black aur dark mein white hoga */
-.stApp div[data-testid="stUploadedFile"] * {{
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
+/* Universal Target: file name / size text always readable black */
+.stApp div[data-testid="stUploadedFile"] *,
+.stApp div[data-testid="stUploadedFileData"] *,
+.stApp li[data-testid="stFileUploaderFile"] * {{
+    color: #0A0F18 !important;
+    -webkit-text-fill-color: #0A0F18 !important;
+    font-weight: 700 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
 }}
 
 .stApp div[data-testid="stUploadedFile"] p,
 .stApp div[data-testid="stUploadedFile"] span,
-.stApp div[data-testid="stUploadedFile"] div {{
-    font-weight: 700 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+.stApp div[data-testid="stUploadedFileData"] p,
+.stApp div[data-testid="stUploadedFileData"] span {{
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }}
 
 /* File size (1.0MB) ke liye mute color */
-.stApp div[data-testid="stUploadedFile"] small {{
-    color: #000000 !important;
-    -webkit-text-fill-color: var(--snow-mute) !important;
+.stApp div[data-testid="stUploadedFile"] small,
+.stApp div[data-testid="stUploadedFileData"] small {{
+    color: #64748B !important;
+    -webkit-text-fill-color: #64748B !important;
     font-weight: 600 !important;
     display: block !important;
     margin-top: 2px !important;
 }}
 
 /* Pyara sa red Delete (X) Button */
-.stApp div[data-testid="stUploadedFile"] button {{
+.stApp div[data-testid="stUploadedFile"] button,
+.stApp div[data-testid="stUploadedFileData"] button {{
     background-color: rgba(255,67,97,0.1) !important;
     border: none !important;
     border-radius: 6px !important;
@@ -781,7 +795,8 @@ st.markdown(f"""
     align-items: center !important;
     justify-content: center !important;
 }}
-.stApp div[data-testid="stUploadedFile"] button svg {{
+.stApp div[data-testid="stUploadedFile"] button svg,
+.stApp div[data-testid="stUploadedFileData"] button svg {{
     fill: #FF4361 !important;
     -webkit-text-fill-color: #FF4361 !important;
     color: #FF4361 !important;
@@ -929,15 +944,13 @@ kpi_data = [
 ]
 
 cols = st.columns(5, gap="small")
-
-# Yahan se 'ico' hata diya gaya hai taake error na aaye (sirf 7 variables hain)
-for i, (col, (val, lbl, color, glow, border, pill_cls, pill_txt)) in enumerate(zip(cols, kpi_data)):
+for i, (col, (ico, val, lbl, color, glow, border, pill_cls, pill_txt)) in enumerate(zip(cols, kpi_data)):
     with col:
-        # Yahan se bhi <div class="kpi-icon">{ico}</div> hata diya gaya hai
         st.markdown(f"""
         <div class="kpi-card" style="--kc-color:{color}; --kc-glow:{glow}; --kc-border:{border}; animation-delay:{i*0.08}s;">
           <div class="kpi-card-top-bar"></div>
           <div class="kpi-card-bg"></div>
+          <div class="kpi-icon">{ico}</div>
           <div class="kpi-val">{val}</div>
           <div class="kpi-lbl">{lbl}</div>
           <div class="kpi-pill {pill_cls}">{pill_txt}</div>
@@ -1005,8 +1018,7 @@ hist_agg = (
 )
 
 # Last month vs second-last month actual revenue (trend direction from real data)
-#months_ordered = sorted(df["_month"].unique())
-months_ordered = sorted(df["_month"].dropna().astype(str).unique())
+months_ordered = sorted(df["_month"].unique())
 last_two = months_ordered[-2:] if len(months_ordered) >= 2 else months_ordered
 
 trend_df = None
@@ -1699,7 +1711,7 @@ with tabs[5]:
 # ── Tab 7: AI Store Advisor
 with tabs[6]:
 
-    GEMINI_API_KEY = "AIzaSyBZEGli1sk_rMTXCMRERqxd4bYDYmcjcz0"
+    GEMINI_API_KEY = "AQ.Ab8RN6IzTU2ySjm0QI3AGfNNinUeNCPgv2Rt0RHGTmg4JzgeFg"
     #GEMINI_MODEL   = "gemini-flash-latest"
     GEMINI_MODEL   = "gemini-3.1-flash-lite-preview"
 
@@ -1959,6 +1971,10 @@ CRITICAL RULES:
     }}
 
     /* ── Send button ── */
+    .adv-input div[data-testid="stHorizontalBlock"] {{
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }}
     .send-btn > div > button {{
         background: linear-gradient(135deg, #9B7FFF, #3D8EFF) !important;
         color: #fff !important; border: none !important;
@@ -1967,6 +1983,8 @@ CRITICAL RULES:
         font-weight: 700 !important; font-size: 0.82rem !important;
         box-shadow: 0 4px 14px rgba(155,127,255,0.4) !important;
         transition: all 0.2s !important;
+        height: 2.7rem !important;
+        min-height: 2.7rem !important;
     }}
 
     /* ── Clear button ── */
@@ -2103,19 +2121,17 @@ CRITICAL RULES:
     # ── Input + Send ──
     st.markdown('<div class="adv-input">', unsafe_allow_html=True)
     col_in, col_btn = st.columns([6, 1])
-    col_in, col_btn = st.columns([6, 1])
-with col_in:
-    user_input = st.text_input(
-        "msg",
-        placeholder="Ask about your store…  e.g. Which product has the best margin?",
-        key="adv_input",
-        label_visibility="collapsed"
-    )
-with col_btn:
-    st.markdown('<div class="send-btn">', unsafe_allow_html=True)
-    st.markdown('<div style="margin-top:0.1rem;">', unsafe_allow_html=True)
-    send_hit = st.button("Send ➤", key="adv_send", use_container_width=True)
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    with col_in:
+        user_input = st.text_input(
+            "msg",
+            placeholder="Ask about your store…  e.g. Which product has the best margin?",
+            key="adv_input",
+            label_visibility="collapsed"
+        )
+    with col_btn:
+        st.markdown('<div class="send-btn">', unsafe_allow_html=True)
+        send_hit = st.button("Send ➤", key="adv_send", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 
