@@ -674,201 +674,6 @@ st.markdown(f"""
 .upload-req-row {{ display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 500; color: var(--snow-dim); margin-bottom: 12px; }}
 .upload-req-dot {{ width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }}
 
-/* ═════════════════════════════════════════════════
-   NUCLEAR HACK: BUTTON POSITIONING & TEXT HIDING
-   ═════════════════════════════════════════════════ */
-.stApp [data-testid="stFileUploader"] {{
-    position: relative !important;
-    margin-top: -9.5rem !important; /* <--- YE BUTTON KO BOHOT UPAR KHENCH LEGA */
-    margin-left: auto !important;
-    margin-right: 4rem !important; 
-    width: 32% !important;
-    min-width: 260px !important;
-    z-index: 100 !important;
-}}
-
-/* Streamlit ke dropzone ka background aur border khatam */
-.stApp [data-testid="stFileUploaderDropzone"] {{
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    color: transparent !important; /* YEH HACK "Drag and drop" text ko invisible kar dega */
-}}
-
-/* Cloud icon ko hamesha ke liye hide karein */
-.stApp [data-testid="stFileUploaderDropzone"] svg {{
-    display: none !important;
-}}
-
-/* Drag & drop instructional text (filename, "Limit 200MB" etc) - hide fully so it doesn't clash with the button */
-.stApp [data-testid="stFileUploaderDropzone"] > div > span,
-.stApp [data-testid="stFileUploaderDropzone"] > div > small,
-.stApp [data-testid="stFileUploaderDropzone"] > div > div > span,
-.stApp [data-testid="stFileUploaderDropzone"] > div > div > small {{
-    display: none !important;
-}}
-
-/* SIRF BUTTON KO COLOR WAPIS DEIN */
-.stApp [data-testid="stFileUploaderDropzone"] button {{
-    width: 100% !important;
-    background-color: #0F172A !important; 
-    border: 1px solid #0F172A !important;
-    border-radius: 10px !important;
-    padding: 10px 14px !important;
-    min-height: 44px !important;
-    margin: 0 !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
-    overflow: hidden !important;
-}}
-.stApp [data-testid="stFileUploaderDropzone"] button:hover {{
-    background-color: #1E293B !important;
-    border-color: #1E293B !important;
-}}
-
-/* making white text color of the button (all inner nodes, since browse-files label can be wrapped in nested spans) */
-.stApp [data-testid="stFileUploaderDropzone"] button,
-.stApp [data-testid="stFileUploaderDropzone"] button * {{
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    font-weight: 700 !important;
-    opacity: 1 !important;
-}}
-
-/* NUCLEAR FIX for duplicate "UploadUpload" text: shrink every real text
-   node inside the button to zero size, then inject ONE clean label via
-   a pseudo-element. Guarantees a single, non-duplicated label no matter
-   how many hidden/sr-only text nodes Streamlit renders internally. */
-.stApp [data-testid="stFileUploaderDropzone"] button {{
-    position: relative !important;
-    font-size: 0 !important;
-    line-height: 0 !important;
-    color: transparent !important;
-}}
-.stApp [data-testid="stFileUploaderDropzone"] button * {{
-    font-size: 0 !important;
-    line-height: 0 !important;
-    color: transparent !important;
-}}
-.stApp [data-testid="stFileUploaderDropzone"] button::after {{
-    content: "Upload File" !important;
-    display: block !important;
-    font-size: 0.9rem !important;
-    line-height: 1.4 !important;
-    font-weight: 700 !important;
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-}}
-
-/* Once a file has already been selected/staged, the original drag-drop
-   CTA button becomes a leftover duplicate ("Upload File" showing twice).
-   Hide the dropzone whenever it sits next to ANY other sibling element
-   inside the uploader (i.e. a file row has been added) — works no matter
-   which order they render in, and doesn't depend on exact tag/class names. */
-.stApp [data-testid="stFileUploaderDropzone"]:has(~ *) {{
-    display: none !important;
-}}
-.stApp * + [data-testid="stFileUploaderDropzone"] {{
-    display: none !important;
-}}
-
-/* ═════════════════════════════════════════════════
-   UNIVERSAL CATCH-ALL: any button/text anywhere inside the
-   file uploader (dropzone, file row, "add" confirm button —
-   whatever internal testid this Streamlit version uses)
-   must always be white text on dark background.
-   ═════════════════════════════════════════════════ */
-.stApp [data-testid="stFileUploader"] * {{
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-}}
-.stApp [data-testid="stFileUploader"] button {{
-    background-color: #0F172A !important;
-    border: 1px solid #0F172A !important;
-    border-radius: 8px !important;
-}}
-.stApp [data-testid="stFileUploader"] button:hover {{
-    background-color: #1E293B !important;
-    border-color: #1E293B !important;
-}}
-.stApp [data-testid="stFileUploader"] li,
-.stApp [data-testid="stFileUploader"] [class*="File"] {{
-    background-color: #0F172A !important;
-    border-radius: 10px !important;
-}}
-
-/* ═════════════════════════════════════════════════
-   UPLOADED FILE TEXT VISIBILITY
-   ═════════════════════════════════════════════════ */
-.stApp div[data-testid="stUploadedFile"],
-.stApp div[data-testid="stUploadedFileData"],
-.stApp li[data-testid="stFileUploaderFile"] {{
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    background-color: #FFFFFF !important; 
-    border: 1px solid var(--line-2) !important;
-    border-radius: 10px !important;
-    padding: 10px 14px !important;
-    margin-top: 15px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
-}}
-
-/* Universal Target: file name / size text always readable black */
-.stApp div[data-testid="stUploadedFile"] *,
-.stApp div[data-testid="stUploadedFileData"] *,
-.stApp li[data-testid="stFileUploaderFile"] * {{
-    color: #0A0F18 !important;
-    -webkit-text-fill-color: #0A0F18 !important;
-    font-weight: 700 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-}}
-
-.stApp div[data-testid="stUploadedFile"] p,
-.stApp div[data-testid="stUploadedFile"] span,
-.stApp div[data-testid="stUploadedFileData"] p,
-.stApp div[data-testid="stUploadedFileData"] span {{
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-}}
-
-/* File size (1.0MB) ke liye mute color */
-.stApp div[data-testid="stUploadedFile"] small,
-.stApp div[data-testid="stUploadedFileData"] small {{
-    color: #64748B !important;
-    -webkit-text-fill-color: #64748B !important;
-    font-weight: 600 !important;
-    display: block !important;
-    margin-top: 2px !important;
-}}
-
-/* Pyara sa red Delete (X) Button */
-.stApp div[data-testid="stUploadedFile"] button,
-.stApp div[data-testid="stUploadedFileData"] button {{
-    background-color: rgba(255,67,97,0.1) !important;
-    border: none !important;
-    border-radius: 6px !important;
-    width: 32px !important;
-    height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}}
-.stApp div[data-testid="stUploadedFile"] button svg,
-.stApp div[data-testid="stUploadedFileData"] button svg {{
-    fill: #FF4361 !important;
-    -webkit-text-fill-color: #FF4361 !important;
-    color: #FF4361 !important;
-    width: 16px !important;
-    height: 16px !important;
-}}
-
-.stApp div[data-testid="stFileUploader"] .stAlert {{
-    margin-top: 10px !important; padding: 10px 14px !important; border-radius: 10px !important;
-}}
 </style>
 
 <div class="hero-wrap">
@@ -895,19 +700,17 @@ st.markdown(f"""
 <div class="upload-sub">Format: <span class="upload-fmt-chip">.CSV</span><span class="upload-fmt-chip">.XLSX</span></div>
 </div>
 </div>
-<div style="margin-top: 0.5rem; margin-bottom: 0;">
+<div style="margin-top: 0.5rem; margin-bottom: 1.2rem;">
 <div class="upload-req-row"><span class="upload-req-dot" style="background:#9B7FFF"></span> <span><strong>Required fields:</strong> Product ID, Date, Quantity, Revenue</span></div>
 <div class="upload-req-row"><span class="upload-req-dot" style="background:#9B7FFF"></span> <span><strong>Optional:</strong> Cost, Region, Category</span></div>
 </div>
-
-<div style="height: 120px;"></div>
 
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── SINGLE CLEAN UPLOADER
-uploaded_file = st.file_uploader("", type=["csv","xlsx","xls"], label_visibility="collapsed", key="main_data_uploader")
+# ── SINGLE CLEAN UPLOADER (plain default Streamlit widget, no custom CSS) ──
+uploaded_file = st.file_uploader("Upload your sales data", type=["csv","xlsx","xls"])
 df_raw = None
 
 if uploaded_file is not None:
